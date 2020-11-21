@@ -93,11 +93,11 @@ namespace git
         private static void ShowVersionHistory()
         {
             Console.WriteLine("Commitok listázása:");
-            string[] commits = Directory.GetFiles("..\\..\\.dusza").ToArray();
+            string[] commits = Directory.GetDirectories("..\\..\\.dusza").ToArray();
             //the commits in the .dusza folder
             for (int i = 0; i < commits.Length; i++)
             {
-                Console.WriteLine(i + 1 + ". commit" + commits[i]);
+                Console.WriteLine(commits[i].Split('\\').Last());
             }
             //exiting or getting detalis of the selected commit
             Console.WriteLine("Ha ki szeretne lépni, nyomjon *-ot.");
@@ -114,7 +114,10 @@ namespace git
                 //if the commit exists, displaying the correct commit.details
                 else
                 {
-                    Console.Write(File.ReadAllLines("..\\..\\.dusza\\" + commitID + ".commit\\commit.details"));
+                    foreach (var item in File.ReadAllLines("..\\..\\.dusza\\" + commitID + ".commit\\commit.details"))
+                    {
+                        Console.WriteLine(item);
+                    }
                 }
             }
             while (commitID != "*");
@@ -122,6 +125,23 @@ namespace git
 
         private static void ChangeVersion()
         {
+            string[] commits = Directory.GetDirectories("..\\..\\.dusza");
+
+            for (int i = 0; i < commits.Length; i++)
+            {
+                Console.WriteLine(i + 1 + " " + commits[i].Split('\\').Last());
+            }
+            Console.WriteLine("Válassza ki a visszaállítandó verziót");
+            string userInput = Console.ReadLine();
+            if(Convert.ToInt32(userInput) > commits.Length)
+            {
+                Console.WriteLine("nem megfelelo indexelés");
+            }
+            else
+            {
+                Git.ChangeVersion(Convert.ToInt32(userInput));
+                Console.WriteLine(userInput+"commit betöltve");
+            }
         }
 
         private static void CreateCommit()

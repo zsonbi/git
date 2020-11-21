@@ -15,6 +15,7 @@ namespace git
 
         public FileDetails(string input, string previous)
         {
+            this.fileName = input.Split('\\').Last();
             if (previous == "")
             {
                 state = "uj";
@@ -22,8 +23,9 @@ namespace git
             }
             else if (input == "")
             {
+                this.fileName = previous.Split('\\').Last();
                 state = "torolt";
-                date = File.GetLastWriteTime(previous).ToString().Split('\\').Last();
+                date = File.GetLastWriteTime(previous).ToString();
             }
             else if (File.GetLastWriteTime(input) == File.GetLastWriteTime(previous))
             {
@@ -35,7 +37,6 @@ namespace git
                 state = "valtozott";
                 date = File.GetLastWriteTime(input).ToString().Split('\\').Last();
             }
-            this.fileName = input;
         }
 
         public void ChangeState(string newState)

@@ -62,9 +62,14 @@ namespace git
             int separateCounter = 0;
             for (int i = 0; i < newFiles.Length; i++)
             {
-                if (newFiles[i].Split('\\').Last() == previousFiles[separateCounter].Split('\\').Last())
+                if (previousFiles[separateCounter].Split('\\').Last() == "commit.details")
                 {
-                    changedFiles.Add(new FileDetails(newFiles[i], previousFiles[separateCounter]));
+                    separateCounter++;
+                    i--;
+                    continue;
+                }
+                else if (newFiles[i].Split('\\').Last() == previousFiles[separateCounter].Split('\\').Last())
+                {
                     separateCounter++;
                 }
                 else if (newFiles[i].Split('\\').Last() == previousFiles[separateCounter + 1].Split('\\').Last())
@@ -84,16 +89,16 @@ namespace git
         //Copies the files and the directory to the repository
         private void CopyFiles(string input = "commitPath")
         {
-            string commitPath = path + "\\.dusza" + "\\";
+            string commitPath = path + "\\.dusza" + "\\" + commitName;
             string basicPath = path;
             if (input == "commitPath")
             {
                 string fileName = "";
-                string destinationFile = Path.Combine(commitPath + commitName, fileName);
+                string destinationFile = Path.Combine(commitPath, fileName);
                 foreach (string sourceF in Directory.GetFiles(path))
                 {
                     fileName = Path.GetFileName(sourceF);
-                    destinationFile = Path.Combine(commitPath + commitName, fileName);
+                    destinationFile = Path.Combine(commitPath, fileName);
                     File.Copy(sourceF, destinationFile, true);
                 }
 
@@ -102,7 +107,7 @@ namespace git
                     SearchOption.AllDirectories))
                 {
                     if (!dirPath.Contains("\\.dusza"))
-                        Directory.CreateDirectory(dirPath.Replace(path, commitPath + commitName));
+                        Directory.CreateDirectory(dirPath.Replace(path, commitPath));
                 }
 
                 //Copy all the files & Replaces any files with the same name
@@ -110,7 +115,7 @@ namespace git
                     SearchOption.AllDirectories))
                 {
                     if (!newPath.Contains("\\.dusza"))
-                        File.Copy(newPath, newPath.Replace(path, commitPath + commitName), true);
+                        File.Copy(newPath, newPath.Replace(path, commitPath), true);
                 }
             }
             else
@@ -129,15 +134,15 @@ namespace git
                     SearchOption.AllDirectories))
                 {
                     if (!dirPath.Contains("\\.dusza"))
-                        Directory.CreateDirectory(dirPath.Replace(commitPath + commitName, basicPath));
+                        Directory.CreateDirectory(dirPath.Replace(commitPath, basicPath));
                 }
 
                 //Copy all the files & Replaces any files with the same name
-                foreach (string newPath in Directory.GetFiles(path, "*.*",
+                foreach (string newPath in Directory.GetFiles(commitPath, "*.*",
                     SearchOption.AllDirectories))
                 {
                     if (!newPath.Contains("\\.dusza"))
-                        File.Copy(newPath, newPath.Replace(path, commitPath + commitName), true);
+                        File.Copy(newPath, newPath.Replace(commitPath + commitName, basicPath), true);
                 }
             }
         }

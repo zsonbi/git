@@ -93,7 +93,7 @@ namespace git
         private static void ShowVersionHistory()
         {
             Console.WriteLine("Commitok listázása:");
-            string[] commits = Directory.GetFiles("..\\..\\.dusza").ToArray();
+            string[] commits = Directory.GetDirectories("..\\..\\.dusza").ToArray();
             //the commits in the .dusza folder
             for (int i = 0; i < commits.Length; i++)
             {
@@ -122,6 +122,14 @@ namespace git
 
         private static void ChangeVersion()
         {
+            string[] commits = Directory.GetDirectories("..\\..\\.dusza");
+
+            for (int i = 0; i < commits.Length; i++)
+            {
+                Console.WriteLine(i + 1 + commits[i].Split('\\').Last());
+            }
+            Console.WriteLine("Válassza ki a visszaállítandó verziót");
+            string userInput = Console.ReadLine();
         }
 
         private static void CreateCommit()

@@ -37,7 +37,7 @@ namespace git
             }
         }
 
-        //---------------------------------------------
+        //-----------------------------------------------------------------
         //private Methods
         //Updates the content of the head
         private void UpdateHead()
@@ -46,7 +46,8 @@ namespace git
             File.WriteAllLines(path + "\\.dusza\\head.txt", new string[] { currentCommitNumber.ToString() });
         }
 
-        //----------------------------------------------------------------
+        //-----------------------------------------------------------------
+        //Returns the files that were changed
         private FileDetails[] GetChangedFiles()
         {
             List<FileDetails> changedFiles = new List<FileDetails>();
@@ -62,7 +63,13 @@ namespace git
             int separateCounter = 0;
             for (int i = 0; i < newFiles.Length; i++)
             {
-                if (newFiles[i].Split('\\').Last() == previousFiles[separateCounter].Split('\\').Last())
+                if (previousFiles[separateCounter].Split('\\').Last() == "commit.details")
+                {
+                    separateCounter++;
+                    i--;
+                    continue;
+                }
+                else if (newFiles[i].Split('\\').Last() == previousFiles[separateCounter].Split('\\').Last())
                 {
                     separateCounter++;
                 }
@@ -173,8 +180,9 @@ namespace git
         }
 
         //------------------------------------------------------------
-        public void ChangeVersion()
+        public void ChangeVersion(int selectedCommit)
         {
+            CopyFiles("reverseCopy");
         }
 
         //---------------------------------------------------------
